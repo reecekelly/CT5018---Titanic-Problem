@@ -1,6 +1,7 @@
 #'Normalising Function
 #'
 #'Takes in any numeric value and converts it into a value which is between 0-1
+#'Lantz, B. (2013). Machine learning with R. Birmingham, Mumbai: Packt Publishing, pp.79
 #'@param x a numeric value to be normalised
 #'@return The normalised value of the input
 #'@export
@@ -11,6 +12,7 @@ normalize <- function(x) {
 #'FScore Function
 #'
 #'Takes in multiple values and returns a standard numeric value between 0-1, which can easily rate your data prediction model
+#'Lantz, B. (2013). Machine learning with R. Birmingham, Mumbai: Packt Publishing, pp.310
 #'@param TP True Positive, correctly predicted positve values
 #'@param FP False Positive, correctly predicted negative values
 #'@param FN False negative, wrongly predicted negative values
@@ -37,6 +39,7 @@ Accuracy <- function(TP, FP, TN, FN) {
 #'Error Rate Function
 #'
 #'Takes in multiple values and returns the error rate of your model, a value between 0-1
+#'Lantz, B. (2013). Machine learning with R. Birmingham, Mumbai: Packt Publishing, pp.309
 #'@param TP True Positive, correctly predicted positve values
 #'@param FP False Positive, correctly predicted negative values
 #'@param TN True negative, correctly predicted negative values
@@ -50,6 +53,7 @@ ErrorRate <- function(TP, FP, TN, FN) {
 #'Precision Function
 #'
 #'Takes in multiple values and returns the precision of your model, a value between 0-1
+#'Lantz, B. (2013). Machine learning with R. Birmingham, Mumbai: Packt Publishing, pp.309
 #'@param TP True Positive, correctly predicted positve values
 #'@param FP False Positive, correctly predicted negative values
 #'@return The precision of the inputs

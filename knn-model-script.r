@@ -3,16 +3,12 @@ install.packages("gmodels")
 library(gmodels)
 # load the "class" library
 library(class)
-# iNSTALL rocr package
-install.packages("ROCR")
-#enable ROC curve
-library(ROCR)
 
 #Setting the random seed
 set.seed(12345)
 
 # Setup directory
-setwd('N:/GitHub/CT5018---Titanic-Problem')
+setwd('C:/Users/Reece Kelly/Documents/GitHub/CT5018---Titanic-Problem')
 titanicdata <- read.csv("train.csv", stringsAsFactors=FALSE)
 str(titanicdata)
 
@@ -57,7 +53,7 @@ titanicdata_test_labels <- titanicdata[ceiling(numberofrows*0.75):numberofrows, 
 nValue <- 27
 
 # knn model creation
-titanicdata_test_pred <- knn(train = titanicdata_train, test = titanicdata_test, cl = titanicdata_train_labels, k=nValue)
+titanicdata_test_pred <- knn(train = titanicdata_train, test = titanicdata_test, cl = titanicdata_train_labels, k=)
 
 # Displays the results of the knn model in a cross table
 ctable <- CrossTable(titanicdata_test_labels, titanicdata_test_pred, prop.chisq=FALSE, dnn = c('actual default', 'predicted default'))

@@ -10,15 +10,8 @@ install.packages("gmodels")
 library(gmodels)
 library(class)
 
-## Functions
-# FScore Function
-FScore <- function(TP, FP, FN) {
-  TPS <- 2*TP
-  return ((TPS) / ((TPS)+FP+FN))
-}
-
 # Setup directory
-setwd('N:/GitHub/CT5018---Titanic-Problem')
+setwd('C:/Users/Reece Kelly/Documents/GitHub/CT5018---Titanic-Problem')
 titanicdata <- read.csv("train.csv", stringsAsFactors=FALSE)
 str(titanicdata)
 
@@ -65,7 +58,7 @@ prop.table(table(titanic_train$Survived))
 prop.table(table(titanic_test$Survived))
 
 # Decision Tree model creation
-titanic_model <- C5.0(titanic_train[-5],titanic_train$Survived,trials = 1)
+titanic_model <- C5.0(titanic_train[-5],titanic_train$Survived,trials = 17)
 
 # Creating useable data for cross table
 titanic_pred <- predict(titanic_model, titanic_test)
@@ -89,21 +82,6 @@ text(fit, use.n=TRUE, all=TRUE, cex=.8)
 text(titanic_model, use.n=TRUE, all=TRUE, cex=.8)
 
 summary(titanic_model) 
-
-#TP
-print(ctable$t[1,1])
-#FP
-print(ctable$t[2,2])
-#FScore
-print(fscore <- FScore(ctable$t[1,1],ctable$t[1,2],ctable$t[2,1]))
-#Accuracy
-print(Accuracy(ctable$t[1,1],ctable$t[1,2],ctable$t[2,2],ctable$t[2,1]))
-#Error Rate
-print(ErrorRate(ctable$t[1,1],ctable$t[1,2],ctable$t[2,2],ctable$t[2,1]))
-# Precision
-print(Precision(ctable$t[1,1], ctable$t[1,2]))
-# Recall
-print(Recall(ctable$t[1,1], ctable$t[2,1]))
 
 ## Error scaler code
 # Creating a error scaler
