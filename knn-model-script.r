@@ -1,23 +1,18 @@
 # Installs the package for graphs etc
-#install.packages("gmodels")
+install.packages("gmodels")
 library(gmodels)
 # load the "class" library
 library(class)
+# iNSTALL rocr package
+install.packages("ROCR")
+#enable ROC curve
+library(ROCR)
 
-## Functions
-# Normalise Function
-normalize <- function(x) {
-  return ((x - min(x)) / (max(x) - min(x)))
-}
-
-# FScore Function
-FScore <- function(TP, FP, FN) {
-  TPS <- 2*TP
-  return ((TPS) / ((TPS)+FP+FN))
-}
+#Setting the random seed
+set.seed(12345)
 
 # Setup directory
-setwd('E:/CT5018 Data Analytics/Titanic Machine Learning from Disaster/data')
+setwd('N:/GitHub/CT5018---Titanic-Problem')
 titanicdata <- read.csv("train.csv", stringsAsFactors=FALSE)
 str(titanicdata)
 
@@ -51,12 +46,12 @@ summary(titanicdata)
 numberofrows <- nrow(titanicdata)
 numberofcolumns <- ncol(titanicdata)
 
-titanicdata_train <- titanicdata[1:(numberofrows*0.75), 2:5]
-titanicdata_test <- titanicdata[(numberofrows*0.75):numberofrows, 2:5]
+titanicdata_train <- titanicdata[1:ceiling(numberofrows*0.75), 2:5]
+titanicdata_test <- titanicdata[ceiling(numberofrows*0.75):numberofrows, 2:5]
 
 # Create labels for training and test data
-titanicdata_train_labels <- titanicdata[1:(numberofrows*0.75), 1]
-titanicdata_test_labels <- titanicdata[(numberofrows*0.75):numberofrows, 1]
+titanicdata_train_labels <- titanicdata[1:ceiling(numberofrows*0.75), 1]
+titanicdata_test_labels <- titanicdata[ceiling(numberofrows*0.75):numberofrows, 1]
 
 # Variable k
 nValue <- 27
@@ -65,7 +60,19 @@ nValue <- 27
 titanicdata_test_pred <- knn(train = titanicdata_train, test = titanicdata_test, cl = titanicdata_train_labels, k=nValue)
 
 # Displays the results of the knn model in a cross table
-ctable <- CrossTable(titanicdata_test_labels, titanicdata_test_pred, prop.chisq=FALSE)
+ctable <- CrossTable(titanicdata_test_labels, titanicdata_test_pred, prop.chisq=FALSE, dnn = c('actual default', 'predicted default'))
 
-fscore <- FScore(ctable$t[1,1],ctable$t[1,2],ctable$t[2,1])
-print(fscore)  
+#TP
+print(ctable$t[1,1])
+#FP
+print(ctable$t[2,2])
+#FScore
+print(fscore <- FScore(ctable$t[1,1],ctable$t[1,2],ctable$t[2,1]))
+#Accuracy
+print(Accuracy(ctable$t[1,1],ctable$t[1,2],ctable$t[2,2],ctable$t[2,1]))
+#Error Rate
+print(ErrorRate(ctable$t[1,1],ctable$t[1,2],ctable$t[2,2],ctable$t[2,1]))
+# Precision
+print(Precision(ctable$t[1,1], ctable$t[1,2]))
+# Recall
+print(Recall(ctable$t[1,1], ctable$t[2,1]))

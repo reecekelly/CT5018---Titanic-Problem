@@ -2,6 +2,9 @@
 install.packages("C50") 
 library(C50)
 
+install.packages("rpart")
+library(rpart)
+
 ## Installs the package for graphs etc
 install.packages("gmodels")
 library(gmodels)
@@ -15,9 +18,13 @@ FScore <- function(TP, FP, FN) {
 }
 
 # Setup directory
-setwd('E:/CT5018 Data Analytics/Titanic Machine Learning from Disaster/data')
+setwd('N:/GitHub/CT5018---Titanic-Problem')
 titanicdata <- read.csv("train.csv", stringsAsFactors=FALSE)
 str(titanicdata)
+
+# changes sex column values to useable data entries
+titanicdata$Sex <- sub("female", 1, titanicdata$Sex)
+titanicdata$Sex <- sub("male", 0, titanicdata$Sex)
 
 # Remove excess features
 titanicdata = titanicdata[-c(1,4,7:9,11:12)]
@@ -50,42 +57,76 @@ head(titanicdata_mod)
 head(titanic_rand)
 
 # Splitting the data set 90% modeling - 10% testing
-titanic_train <- titanic_rand[1:numberofrows*0.9, ]
-titanic_test <- titanic_rand[numberofrows*0.9:714, ]
+titanic_train <- titanic_rand[1:ceiling(numberofrows*0.9), ]
+titanic_test <- titanic_rand[ceiling(numberofrows*0.9):numberofrows, ]
 
 # Checking for equal split (around 30%)
 prop.table(table(titanic_train$Survived))
 prop.table(table(titanic_test$Survived))
 
 # Decision Tree model creation
-titanic_model <- C5.0(titanic_train[-5], 
-                      titanic_train$Survived, 
-                      trials = 100)
+titanic_model <- C5.0(titanic_train[-5],titanic_train$Survived,trials = 1)
 
 # Creating useable data for cross table
 titanic_pred <- predict(titanic_model, titanic_test)
 
 # Cross table to plot results from Decision Tree model
-ctable <- CrossTable(titanic_test$Survived, titanic_pred, 
-                     prop.chisq = FALSE, prop.c = FALSE, prop.r = FALSE,
-                     dnn = c('actual default', 'predicted default'))
+ctable <- CrossTable(titanic_test$Survived, titanic_pred, prop.chisq = FALSE, prop.c = FALSE, prop.r = FALSE)
 
-fscore <- FScore(ctable$t[1,1],ctable$t[1,2],ctable$t[2,1])
-print(fscore) 
+#$$$$$$$$$$$$$$$$$$ rpart START
+#install.packages('rpart')
+library(rpart)
+fit <- rpart(Survived ~ .,
+             method="class", data=titanic_train)
+
+head(titanic_train)
+
+plot(fit, uniform=TRUE, 
+     main="Classification Tree for Kyphosis")
+text(fit, use.n=TRUE, all=TRUE, cex=.8)
+#$$$$$$$$$$$$$$$$$$ rpart END
+
+text(titanic_model, use.n=TRUE, all=TRUE, cex=.8)
+
+summary(titanic_model) 
+
+#TP
+print(ctable$t[1,1])
+#FP
+print(ctable$t[2,2])
+#FScore
+print(fscore <- FScore(ctable$t[1,1],ctable$t[1,2],ctable$t[2,1]))
+#Accuracy
+print(Accuracy(ctable$t[1,1],ctable$t[1,2],ctable$t[2,2],ctable$t[2,1]))
+#Error Rate
+print(ErrorRate(ctable$t[1,1],ctable$t[1,2],ctable$t[2,2],ctable$t[2,1]))
+# Precision
+print(Precision(ctable$t[1,1], ctable$t[1,2]))
+# Recall
+print(Recall(ctable$t[1,1], ctable$t[2,1]))
 
 ## Error scaler code
 # Creating a error scaler
 error_survived <- matrix(c(0, 1, 4, 0), nrow = 2)
 
 # apply the cost matrix to the tree
-titanic_survived <- C5.0(titanic_train[-5], titanic_train$Survived,
-                    costs = error_survived)
+titanic_survived <- C5.0(titanic_train[-5], titanic_train$Survived, costs = error_survived)
 
 titanic_cost_pred <- predict(titanic_survived, titanic_test)
 
-update <- CrossTable(titanic_test$Survived, titanic_cost_pred,
-                    prop.chisq = FALSE, prop.c = FALSE, prop.r = FALSE,
-                    dnn = c('actual default', 'predicted default'))
+ctable <- CrossTable(titanic_test$Survived, titanic_cost_pred, prop.chisq = FALSE, prop.c = FALSE, prop.r = FALSE, dnn = c('actual default', 'predicted default'))
 
-fscore <- FScore(update$t[1,1],update$t[1,2],update$t[2,1])
-print(fscore) 
+#TP
+print(ctable$t[1,1])
+#FP
+print(ctable$t[2,2])
+#FScore
+print(fscore <- FScore(ctable$t[1,1],ctable$t[1,2],ctable$t[2,1]))
+#Accuracy
+print(Accuracy(ctable$t[1,1],ctable$t[1,2],ctable$t[2,2],ctable$t[2,1]))
+#Error Rate
+print(ErrorRate(ctable$t[1,1],ctable$t[1,2],ctable$t[2,2],ctable$t[2,1]))
+# Precision
+print(Precision(ctable$t[1,1], ctable$t[1,2]))
+# Recall
+print(Recall(ctable$t[1,1], ctable$t[2,1]))

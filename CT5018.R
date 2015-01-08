@@ -46,3 +46,25 @@ Accuracy <- function(TP, FP, TN, FN) {
 ErrorRate <- function(TP, FP, TN, FN) {
   return (1-((TP+TN)/(TP+TN+FP+FN)))
 }
+
+#'Precision Function
+#'
+#'Takes in multiple values and returns the precision of your model, a value between 0-1
+#'@param TP True Positive, correctly predicted positve values
+#'@param FP False Positive, correctly predicted negative values
+#'@return The precision of the inputs
+#'@export
+Precision <- function(TP, FP) {
+  return (TP/(TP+FP))
+}
+
+#'Recall Function
+#'
+#'Takes in multiple values and returns the recall rate of your model, a value between 0-1
+#'@param TP True Positive, correctly predicted positve values
+#'@param FN False negative, wrongly predicted negative values
+#'@return The recall of the inputs
+#'@export
+Recall <- function(TP, FN) {
+  return (TP/(TP+FN))
+}
